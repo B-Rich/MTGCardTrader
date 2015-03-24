@@ -37,9 +37,28 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
         final TextView resultTextView = (TextView) activity.findViewById(R.id.txtResult);
         resultTextView.setText("");
 
-        for (Card card : cards) {
-            resultTextView.append(card.getTitle() + "\n" + "Ed: " + card.getEdition() + " Type: " + card.getType() +
-                    "\n");
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            if (i == 0 || !cards.get(i - 1).getEdition().equals(card.getEdition())) {
+                resultTextView.append(String.format("\n\n%s\nEd: %s\nType: %s\nCast: %s\n" + (card
+                                .getPowerAndToughness()
+                        .equals("-") ? "%.0s" : "P/T: %s\n") + "\n%s\t\t%s\t\t%.2f\n",
+                        card.getTitle(),
+                        card.getEdition(),
+                        card.getType(),
+                        card.getCast(),
+                        card.getPowerAndToughness(),
+                        card.getCondition(),
+                        card.getStock(),
+                        card.getPrice()
+                ));
+            } else {
+                resultTextView.append(String.format("%s\t\t%s\t\t%.2f\n",
+                        card.getCondition(),
+                        card.getStock(),
+                        card.getPrice()
+                ));
+            }
         }
     }
 

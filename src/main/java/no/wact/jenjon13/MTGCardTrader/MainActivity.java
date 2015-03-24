@@ -1,10 +1,11 @@
-package no.wact.jenjon13.Forelesning08;
+package no.wact.jenjon13.MTGCardTrader;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import no.wact.jenjon13.Forelesning08.R;
 
 public class MainActivity extends Activity {
     @Override

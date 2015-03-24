@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="countries">
+        <item>Norway</item>
+        <item>Androrra</item>
+        <item>Androrr</item>
+        <item>Andro</item>
+        <item>An</item>
+        <item>Russia</item>
+        <item>Finland</item>
+        <item>Sweeden</item>
+    </string-array>
+</resources>

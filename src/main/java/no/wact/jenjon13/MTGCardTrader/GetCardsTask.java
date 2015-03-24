@@ -1,7 +1,10 @@
 package no.wact.jenjon13.MTGCardTrader;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
+import no.wact.jenjon13.Forelesning08.R;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,17 +14,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetCardsTask extends AsyncTask<String, Void, Void> {
+public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
+    private final Activity activity;
+
+    public GetCardsTask(Activity activity) {
+        this.activity = activity;
+    }
+
     @Override
-    protected Void doInBackground(String... params) {
+
+    protected List<Card> doInBackground(String... params) {
         Log.v("doInBackground", "Fetching ..");
         if (params[0] == null || ((String) params[0]).isEmpty()) {
             return null;
         }
 
-        final List<Card> cards = searchForCards(params[0]);
+        return searchForCards(params[0]);
+    }
 
-        return null;
+    @Override
+    protected void onPostExecute(List<Card> cards) {
+        final TextView resultTextView = (TextView) activity.findViewById(R.id.txtResult);
+        resultTextView.setText("");
+
+        for (Card card : cards) {
+            resultTextView.append(card.getTitle() + "\n" + "Ed: " + card.getEdition() + " Type: " + card.getType() +
+                    "\n");
+        }
     }
 
     private List<Card> searchForCards(String cardName) {
@@ -36,7 +55,12 @@ public class GetCardsTask extends AsyncTask<String, Void, Void> {
         }
 
         final Elements cards = document.select("body > div.colmask.holygrail > div > div > div.col1wrap > div " +
-                "> div > table:nth-child(10) > tbody > tr"); //  > td > a
+                "> div > table:nth-child(10) > tbody > tr");
+        if (cards.size() < 1) {
+            cancel(true);
+            return null;
+        }
+
         cards.remove(0); // Remove header row.
 
         final ArrayList<Element> foundCards = new ArrayList<Element>();

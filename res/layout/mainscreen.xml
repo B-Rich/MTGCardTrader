@@ -4,24 +4,25 @@
               android:layout_height="fill_parent"
               android:orientation="vertical">
     <EditText
+        android:id="@+id/editCardname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editCardname"
         android:layout_gravity="center_horizontal"
         android:hint="Enter card name"/>
 
     <Button
+        android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
-        android:id="@+id/btnSearch"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:text="Search"/>
 
     <TextView
+        android:id="@+id/txtResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/txtResult"
-        android:layout_gravity="center_horizontal"/>
+        android:textSize="12sp"/>
 </LinearLayout>
 

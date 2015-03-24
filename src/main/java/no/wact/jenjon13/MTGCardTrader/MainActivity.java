@@ -17,7 +17,8 @@ public class MainActivity extends Activity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new GetCardsTask().execute(((EditText) findViewById(R.id.editCardname)).getText().toString());
+                new GetCardsTask(MainActivity.this)
+                        .execute(((EditText) findViewById(R.id.editCardname)).getText().toString());
             }
         });
     }

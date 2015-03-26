@@ -3,8 +3,6 @@ package no.wact.jenjon13.MTGCardTrader;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
-import no.wact.jenjon13.Forelesning08.R;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,49 +14,32 @@ import java.util.List;
 
 public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
     private final Activity activity;
+    private final ArrayList<Card> dataSet;
+    private final CardsAdapter adapter;
 
-    public GetCardsTask(Activity activity) {
+    public GetCardsTask(Activity activity, ArrayList<Card> dataSet, CardsAdapter adapter) {
         this.activity = activity;
+        this.dataSet = dataSet;
+        this.adapter = adapter;
     }
 
     @Override
 
     protected List<Card> doInBackground(String... params) {
         Log.v("doInBackground", "Fetching ..");
-        if (params[0] == null || ((String) params[0]).isEmpty()) {
+        if (params[0] == null || params[0].isEmpty()) {
             return null;
         }
 
+        Log.v("doInBackground", "Params ok, starting search..");
         return searchForCards(params[0]);
     }
 
     @Override
     protected void onPostExecute(List<Card> cards) {
-        final TextView resultTextView = (TextView) activity.findViewById(R.id.txtResult);
-        resultTextView.setText("");
-
-        for (int i = 0; i < cards.size(); i++) {
-            Card card = cards.get(i);
-            if (i == 0 || !cards.get(i - 1).getEdition().equals(card.getEdition())) {
-                resultTextView.append(String.format("\n\n%s\nEd: %s\nType: %s\nCast: %s\n" + (card
-                                .getPowerAndToughness()
-                        .equals("-") ? "%.0s" : "P/T: %s\n") + "\n%s\t\t%s\t\t%.2f\n",
-                        card.getTitle(),
-                        card.getEdition(),
-                        card.getType(),
-                        card.getCast(),
-                        card.getPowerAndToughness(),
-                        card.getCondition(),
-                        card.getStock(),
-                        card.getPrice()
-                ));
-            } else {
-                resultTextView.append(String.format("%s\t\t%s\t\t%.2f\n",
-                        card.getCondition(),
-                        card.getStock(),
-                        card.getPrice()
-                ));
-            }
+        if (cards != null && !cards.isEmpty()) {
+            dataSet.addAll(cards);
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -68,16 +68,16 @@
                 android:id="@+id/listViewLeft"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                />
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"/>
 
             <ListView
                 android:id="@+id/listViewRight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                />
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <RelativeLayout

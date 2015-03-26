@@ -27,16 +27,17 @@ public class MainActivity extends Activity {
         rightAdapter = new CardsAdapter(rightCards, MainActivity.this);
         ((ListView) findViewById(R.id.listViewRight)).setAdapter(rightAdapter);
 
-        findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter));
-        findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter));
+        findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));
+        findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter, R.id.txtPriceRight));
     }
 
-    private View.OnClickListener listener(final ArrayList<Card> cards, final CardsAdapter adapter) {
+    private View.OnClickListener listener(final ArrayList<Card> cards, final CardsAdapter adapter, final int
+            priceTxtId) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final EditText enteredCardText = (EditText) findViewById(R.id.editCardname);
-                new GetCardsTask(MainActivity.this, cards, adapter)
+                new GetCardsTask(MainActivity.this, cards, adapter, priceTxtId)
                         .execute(enteredCardText.getText().toString());
                 enteredCardText.setText("");
             }

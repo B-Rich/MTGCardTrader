@@ -3,6 +3,7 @@ package no.wact.jenjon13.MTGCardTrader;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,11 +17,13 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
     private final Activity activity;
     private final ArrayList<Card> dataSet;
     private final CardsAdapter adapter;
+    private final int priceTxtId;
 
-    public GetCardsTask(Activity activity, ArrayList<Card> dataSet, CardsAdapter adapter) {
+    public GetCardsTask(Activity activity, ArrayList<Card> dataSet, CardsAdapter adapter, int priceTxtId) {
         this.activity = activity;
         this.dataSet = dataSet;
         this.adapter = adapter;
+        this.priceTxtId = priceTxtId;
     }
 
     @Override
@@ -40,6 +43,16 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
         if (cards != null && !cards.isEmpty()) {
             dataSet.addAll(cards);
             adapter.notifyDataSetChanged();
+
+            float totalPrice = 0;
+            for (Card card : cards) {
+                totalPrice += card.getPrice();
+            }
+
+            final TextView priceTxt = (TextView) activity.findViewById(priceTxtId);
+            final String priceString = priceTxt.getText().toString();
+            float currentPrice = Float.parseFloat(priceString.substring(0, priceString.length() - 2));
+            priceTxt.setText(String.format("%.2f$", currentPrice + totalPrice));
         }
     }
 

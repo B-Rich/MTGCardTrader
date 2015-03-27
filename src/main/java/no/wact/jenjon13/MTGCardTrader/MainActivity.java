@@ -12,8 +12,6 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
     private ArrayList<Card> leftCards = new ArrayList<Card>();
     private ArrayList<Card> rightCards = new ArrayList<Card>();
-    private CardsAdapter leftAdapter;
-    private CardsAdapter rightAdapter;
 
 
     @Override
@@ -21,10 +19,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainscreen);
 
-        leftAdapter = new CardsAdapter(leftCards, MainActivity.this);
+        CardsAdapter leftAdapter = new CardsAdapter(leftCards, MainActivity.this);
         ((ListView) findViewById(R.id.listViewLeft)).setAdapter(leftAdapter);
 
-        rightAdapter = new CardsAdapter(rightCards, MainActivity.this);
+        CardsAdapter rightAdapter = new CardsAdapter(rightCards, MainActivity.this);
         ((ListView) findViewById(R.id.listViewRight)).setAdapter(rightAdapter);
 
         findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));

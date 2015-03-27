@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,6 +19,8 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
     private final ArrayList<Card> dataSet;
     private final CardsAdapter adapter;
     private final int priceTxtId;
+    private String message = null;
+
 
     public GetCardsTask(Activity activity, ArrayList<Card> dataSet, CardsAdapter adapter, int priceTxtId) {
         this.activity = activity;
@@ -27,10 +30,10 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
     }
 
     @Override
-
     protected List<Card> doInBackground(String... params) {
         Log.v("doInBackground", "Fetching ..");
         if (params[0] == null || params[0].isEmpty()) {
+            message = "Please enter a card";
             return null;
         }
 
@@ -40,14 +43,22 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
 
     @Override
     protected void onPostExecute(List<Card> cards) {
+        if (message != null) {
+            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+            message = null;
+            return;
+        }
+
         if (cards != null && !cards.isEmpty()) {
-            dataSet.addAll(cards);
+            //dataSet.addAll(cards);
+            dataSet.add(cards.get(0));
             adapter.notifyDataSetChanged();
 
             float totalPrice = 0;
-            for (Card card : cards) {
-                totalPrice += card.getPrice();
-            }
+            //for (Card card : cards) {
+            //  totalPrice += card.getPrice();
+            //}
+            totalPrice += cards.get(0).getPrice();
 
             final TextView priceTxt = (TextView) activity.findViewById(priceTxtId);
             final String priceString = priceTxt.getText().toString();
@@ -64,13 +75,14 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
             document = Jsoup.connect(searchURL + cardNameFormatted).get();
         } catch (IOException e) {
             Log.e("search", "An error occurred when getting document!");
+            message = "An error occurred when getting document!";
             return null;
         }
 
         final Elements cards = document.select("body > div.colmask.holygrail > div > div > div.col1wrap > div " +
                 "> div > table:nth-child(10) > tbody > tr");
         if (cards.size() < 1) {
-            cancel(true);
+            message = "No results for requested card.";
             return null;
         }
 

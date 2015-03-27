@@ -1,101 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:layout_margin="10dp">
 
-    <RelativeLayout
+    <EditText
+        android:id="@+id/editCardname"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp">
+        android:layout_toStartOf="@+id/btnAddLeft"
+        android:hint="Enter card name"
+        android:inputType="textNoSuggestions"
+        android:maxLines="1"/>
 
-        <EditText
-            android:id="@+id/editCardname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_toStartOf="@+id/btnAddLeft"
-            android:hint="Enter card name"/>
-
-        <Button
-            android:id="@+id/btnAddLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/txtPriceLeft"
-            android:layout_gravity="center_horizontal"
-            android:text="Add"/>
+    <Button
+        android:id="@+id/btnAddLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/txtPriceLeft"
+        android:layout_gravity="center_horizontal"
+        android:text="Add"/>
 
 
-        <TextView
-            android:id="@+id/txtPriceLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/btnAddRight"
-            android:layout_alignTop="@+id/txtPriceRight"
-            android:layout_toEndOf="@+id/btnAddLeft"
-            android:gravity="center_vertical"
-            android:text="0.00$"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <TextView
+        android:id="@+id/txtPriceLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnAddRight"
+        android:layout_alignTop="@+id/btnAddRight"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_toEndOf="@+id/txtPriceRight"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="0.00$"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-        <TextView
-            android:id="@+id/txtPriceRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/btnAddRight"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/editCardname"
-            android:layout_marginEnd="63dp"
-            android:gravity="center_vertical"
-            android:text="0.00$"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+    <TextView
+        android:id="@+id/txtPriceRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignTop="@+id/txtPriceLeft"
+        android:layout_marginStart="56dp"
+        android:layout_toEndOf="@+id/btnAddLeft"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="0.00$"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+    <Button
+        android:id="@+id/btnAddRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/editCardname"
+        android:text="Add"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/btnAddLeft"
+        android:layout_toStartOf="@+id/btnAddLeft"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <ListView
+            android:id="@+id/listViewLeft"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/btnAddLeft"
-            android:layout_toStartOf="@+id/btnAddLeft"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"/>
 
-            <ListView
-                android:id="@+id/listViewLeft"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"/>
-
-            <ListView
-                android:id="@+id/listViewRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"/>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/btnAddLeft"
-            android:layout_centerHorizontal="true">
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/btnAddRight"
+        <ListView
+            android:id="@+id/listViewRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/editCardname"
-            android:text="Add"/>
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>
 

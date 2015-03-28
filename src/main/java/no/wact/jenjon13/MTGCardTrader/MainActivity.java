@@ -23,21 +23,19 @@ public class MainActivity extends Activity {
         final CardsAdapter leftAdapter = new CardsAdapter(leftCards, MainActivity.this);
         final ListView listViewLeft = (ListView) findViewById(R.id.listViewLeft);
         listViewLeft.setAdapter(leftAdapter);
-        listViewLeft.setOnItemClickListener(createOnItemClickListener(leftAdapter,
-                (TextView) findViewById(R.id.txtPriceLeft)));
+        listViewLeft.setOnItemClickListener(createOnItemClickListener(leftAdapter, false));
 
         final CardsAdapter rightAdapter = new CardsAdapter(rightCards, MainActivity.this);
         final ListView listViewRight = (ListView) findViewById(R.id.listViewRight);
         listViewRight.setAdapter(rightAdapter);
-        listViewRight.setOnItemClickListener(createOnItemClickListener(rightAdapter,
-                (TextView) findViewById(R.id.txtPriceRight)));
+        listViewRight.setOnItemClickListener(createOnItemClickListener(rightAdapter, true));
 
         findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));
         findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter, R.id.txtPriceRight));
     }
 
-    private AdapterView.OnItemClickListener createOnItemClickListener(final CardsAdapter adapter, final TextView
-            txtPrice) {
+    private AdapterView.OnItemClickListener createOnItemClickListener(final CardsAdapter adapter, final boolean
+            rightSide) {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -55,7 +53,7 @@ public class MainActivity extends Activity {
                                         .txtAmount))
                                         .getText()
                                         .toString()));
-                                recalculateTotal(adapter, ((TextView) findViewById(R.id.txtPriceRight)));
+                                recalculateTotal(adapter, true);
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -69,7 +67,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         adapter.getCards().remove(currentCard);
-                        recalculateTotal(adapter, txtPrice);
+                        recalculateTotal(adapter, rightSide);
                         alertDialog.dismiss();
                     }
                 });
@@ -78,7 +76,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         updateCardCondition(currentCard, Condition.valueOf(((Button) v).getText()
-                                .toString()), adapter, txtPrice);
+                                .toString()), adapter, rightSide);
                         alertDialog.dismiss();
                     }
                 };
@@ -87,7 +85,7 @@ public class MainActivity extends Activity {
                 for (int button : buttons) {
                     final Button btn = (Button) dialogView.findViewById(button);
                     btn.setPressed(currentCard.getCondition().toString()
-                            .equals(btn.getText().toString().toLowerCase().trim()) ? true : false);
+                            .equalsIgnoreCase(btn.getText().toString().trim()) ? true : false);
 
                     btn.setOnClickListener(listener);
                 }
@@ -95,19 +93,25 @@ public class MainActivity extends Activity {
         };
     }
 
-    private void updateCardCondition(Card currentCard, Condition condition, CardsAdapter adapter, TextView txtPrice) {
+    private void updateCardCondition(Card currentCard, Condition condition, CardsAdapter adapter, boolean rightSide) {
         currentCard.setCondition(condition);
-        recalculateTotal(adapter, txtPrice);
+
+        if (currentCard.getPrice() == -1) {
+            new GetPricesForCardTask(MainActivity.this, adapter, rightSide).execute(currentCard);
+        } else {
+            recalculateTotal(adapter, rightSide);
+        }
     }
 
-    private void recalculateTotal(CardsAdapter adapter, TextView priceHolder) {
+    public void recalculateTotal(CardsAdapter adapter, boolean rightSide) {
         float totalPrice = 0;
         for (int i = 0; i < adapter.getCount(); i++) {
             final Card card = (Card) adapter.getItem(i);
             totalPrice += (card.getPrice() * card.getAmount());
         }
 
-        priceHolder.setText(String.format("%.2f$", totalPrice));
+        final int txtId = rightSide ? R.id.txtPriceRight : R.id.txtPriceLeft;
+        ((TextView) findViewById(txtId)).setText(String.format("%.2f$", totalPrice));
         adapter.notifyDataSetChanged();
     }
 

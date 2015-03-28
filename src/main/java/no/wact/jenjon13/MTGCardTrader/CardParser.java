@@ -18,6 +18,7 @@ public class CardParser {
 
             resultingList.add(new Card(
                     elements.get(i).child(0).child(0).text(),
+                    elements.get(i).child(0).child(0).attr("href"),
                     elements.get(i).child(1).text(),
                     elements.get(i).child(2).text(),
                     "N/A", // cast

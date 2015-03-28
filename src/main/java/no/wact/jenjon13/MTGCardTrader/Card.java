@@ -11,10 +11,12 @@ public class Card {
     private final String powerAndToughness;
     private final String rarity;
     private final Map<Condition, Float> conditionPriceMap;
+    private final String pageUrl;
     private int amount = 1;
     private Condition condition;
 
-    public Card(String title, String edition, String type, String cast, String powerAndToughness, String rarity,
+    public Card(String title, String pageUrl, String edition, String type, String cast, String powerAndToughness,
+            String rarity,
             Condition condition, float price) {
         this.title = title;
         this.edition = edition;
@@ -25,6 +27,7 @@ public class Card {
         conditionPriceMap = new HashMap<Condition, Float>(1);
         conditionPriceMap.put(condition, price);
         this.condition = condition;
+        this.pageUrl = pageUrl;
     }
 
     @Override
@@ -108,5 +111,9 @@ public class Card {
 
     public void setCondition(Condition condition) {
         this.condition = condition;
+    }
+
+    public String getPageURL() {
+        return pageUrl;
     }
 }

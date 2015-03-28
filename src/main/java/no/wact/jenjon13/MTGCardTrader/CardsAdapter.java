@@ -44,7 +44,8 @@ public class CardsAdapter extends BaseAdapter {
 
         ((TextView) convertView.findViewById(R.id.txtTitle)).setText(cards.get(position).getTitle());
         ((TextView) convertView.findViewById(R.id.txtEdition)).setText(cards.get(position).getEdition());
-        ((TextView) convertView.findViewById(R.id.txtPrice)).setText("1x$" + cards.get(position).getPrice());
+        ((TextView) convertView.findViewById(R.id.txtPrice))
+                .setText(cards.get(position).getAmount() + "x$" + cards.get(position).getPrice());
         ((TextView) convertView.findViewById(R.id.txtCondition)).setText(cards.get(position).getCondition());
 
         return convertView;

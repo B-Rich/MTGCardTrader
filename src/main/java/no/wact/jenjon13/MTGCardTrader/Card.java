@@ -10,6 +10,7 @@ public class Card {
     private final String condition;
     private final String stock;
     private final float price;
+    private int amount = 1;
 
     public Card(Card base, String condition, String stock, float price) {
         this.title = base.getTitle();
@@ -35,6 +36,14 @@ public class Card {
         this.condition = condition;
         this.stock = stock;
         this.price = price;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public String getTitle() {

@@ -20,16 +20,28 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainscreen);
 
-        CardsAdapter leftAdapter = new CardsAdapter(leftCards, MainActivity.this);
-        ((ListView) findViewById(R.id.listViewLeft)).setAdapter(leftAdapter);
+        final CardsAdapter leftAdapter = new CardsAdapter(leftCards, MainActivity.this);
+        final ListView listViewLeft = (ListView) findViewById(R.id.listViewLeft);
+        listViewLeft.setAdapter(leftAdapter);
+        listViewLeft.setOnItemClickListener(createOnItemClickListener(leftAdapter,
+                (TextView) findViewById(R.id.txtPriceLeft)));
 
         final CardsAdapter rightAdapter = new CardsAdapter(rightCards, MainActivity.this);
-        final ListView listView = (ListView) findViewById(R.id.listViewRight);
-        listView.setAdapter(rightAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final ListView listViewRight = (ListView) findViewById(R.id.listViewRight);
+        listViewRight.setAdapter(rightAdapter);
+        listViewRight.setOnItemClickListener(createOnItemClickListener(rightAdapter,
+                (TextView) findViewById(R.id.txtPriceRight)));
+
+        findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));
+        findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter, R.id.txtPriceRight));
+    }
+
+    private AdapterView.OnItemClickListener createOnItemClickListener(final CardsAdapter adapter, final TextView
+            txtPrice) {
+        return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Card currentCard = (Card) rightAdapter.getItem(position);
+                final Card currentCard = (Card) adapter.getItem(position);
 
                 final View dialogView = getLayoutInflater().inflate(R.layout.carddialog, null);
                 final AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
@@ -43,7 +55,7 @@ public class MainActivity extends Activity {
                                         .txtAmount))
                                         .getText()
                                         .toString()));
-                                recalculateTotal(rightAdapter, ((TextView) findViewById(R.id.txtPriceRight)));
+                                recalculateTotal(adapter, ((TextView) findViewById(R.id.txtPriceRight)));
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -56,16 +68,8 @@ public class MainActivity extends Activity {
                 ((Button) dialogView.findViewById(R.id.btnRemove)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        java.util.List<Card> cards = rightAdapter.getCards();
-                        for (int i = 0; i < cards.size(); i++) {
-                            if (cards.get(i).equals(currentCard)) {
-                                cards.remove(i);
-                                rightAdapter.notifyDataSetChanged();
-                                recalculateTotal(rightAdapter, ((TextView) findViewById(R.id.txtPriceRight)));
-                                break;
-                            }
-                        }
-
+                        adapter.getCards().remove(currentCard);
+                        recalculateTotal(adapter, txtPrice);
                         alertDialog.dismiss();
                     }
                 });
@@ -73,7 +77,8 @@ public class MainActivity extends Activity {
                 final View.OnClickListener listener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        updateCardCondition(((Button) v).getText().toString());
+                        updateCardCondition(currentCard, Condition.valueOf(((Button) v).getText()
+                                .toString()), adapter, txtPrice);
                         alertDialog.dismiss();
                     }
                 };
@@ -81,18 +86,18 @@ public class MainActivity extends Activity {
                 final int[] buttons = {R.id.btnNM, R.id.btnEX, R.id.btnVG, R.id.btnG};
                 for (int button : buttons) {
                     final Button btn = (Button) dialogView.findViewById(button);
-                    btn.setPressed(currentCard.getCondition()
-                            .toLowerCase()
-                            .trim()
+                    btn.setPressed(currentCard.getCondition().toString()
                             .equals(btn.getText().toString().toLowerCase().trim()) ? true : false);
 
                     btn.setOnClickListener(listener);
                 }
             }
-        });
+        };
+    }
 
-        findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));
-        findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter, R.id.txtPriceRight));
+    private void updateCardCondition(Card currentCard, Condition condition, CardsAdapter adapter, TextView txtPrice) {
+        currentCard.setCondition(condition);
+        recalculateTotal(adapter, txtPrice);
     }
 
     private void recalculateTotal(CardsAdapter adapter, TextView priceHolder) {
@@ -106,11 +111,8 @@ public class MainActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
-    private void updateCardCondition(String cardName) {
-    }
-
-    private View.OnClickListener listener(final ArrayList<Card> cards, final CardsAdapter adapter, final int
-            priceTxtId) {
+    private View.OnClickListener listener(final ArrayList<Card> cards,
+            final CardsAdapter adapter, final int priceTxtId) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,5 +1,8 @@
 package no.wact.jenjon13.MTGCardTrader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Card {
     private final String title;
     private final String edition;
@@ -7,35 +10,50 @@ public class Card {
     private final String cast;
     private final String powerAndToughness;
     private final String rarity;
-    private final String condition;
-    private final String stock;
-    private final float price;
+    private final Map<Condition, Float> conditionPriceMap;
     private int amount = 1;
-
-    public Card(Card base, String condition, String stock, float price) {
-        this.title = base.getTitle();
-        this.edition = base.getEdition();
-        this.type = base.getType();
-        this.cast = base.getCast();
-        this.rarity = base.getRarity();
-
-        this.condition = condition;
-        this.stock = stock;
-        this.price = price;
-        this.powerAndToughness = base.getPowerAndToughness();
-    }
+    private Condition condition;
 
     public Card(String title, String edition, String type, String cast, String powerAndToughness, String rarity,
-            String condition, String stock, float price) {
+            Condition condition, float price) {
         this.title = title;
         this.edition = edition;
         this.type = type;
         this.cast = cast;
         this.powerAndToughness = powerAndToughness;
         this.rarity = rarity;
+        conditionPriceMap = new HashMap<Condition, Float>(1);
+        conditionPriceMap.put(condition, price);
         this.condition = condition;
-        this.stock = stock;
-        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append("Card{")
+                .append("title='")
+                .append(title)
+                .append('\'')
+                .append(", edition='")
+                .append(edition)
+                .append('\'')
+                .append(", type='")
+                .append(type)
+                .append('\'')
+                .append(", cast='")
+                .append(cast)
+                .append('\'')
+                .append(", powerAndToughness='")
+                .append(powerAndToughness)
+                .append('\'')
+                .append(", rarity='")
+                .append(rarity)
+                .append('\'')
+                .append(", conditionPriceMap=")
+                .append(conditionPriceMap)
+                .append(", amount=")
+                .append(amount)
+                .append('}')
+                .toString();
     }
 
     public int getAmount() {
@@ -66,52 +84,29 @@ public class Card {
         return powerAndToughness;
     }
 
-    @Override
-    public String toString() {
-        return new StringBuilder().append("Card{")
-                .append("title='")
-                .append(title)
-                .append('\'')
-                .append(", edition='")
-                .append(edition)
-                .append('\'')
-                .append(", type='")
-                .append(type)
-                .append('\'')
-                .append(", cast='")
-                .append(cast)
-                .append('\'')
-                .append(", powerAndToughness='")
-                .append(powerAndToughness)
-                .append('\'')
-                .append(", rarity='")
-                .append(rarity)
-                .append('\'')
-                .append(", condition='")
-                .append(condition)
-                .append('\'')
-                .append(", stock='")
-                .append(stock)
-                .append('\'')
-                .append(", price=")
-                .append(price)
-                .append('}')
-                .toString();
-    }
-
     public String getRarity() {
         return rarity;
     }
 
-    public String getCondition() {
+    public float getPrice() {
+        final Float price = conditionPriceMap.get(getCondition());
+        return price != null ? price : -1;
+    }
+
+    public boolean addNewPrice(Condition condition, float price) {
+        if (conditionPriceMap.get(condition) == null) {
+            conditionPriceMap.put(condition, price);
+            return true;
+        }
+
+        return false;
+    }
+
+    public Condition getCondition() {
         return condition;
     }
 
-    public String getStock() {
-        return stock;
-    }
-
-    public float getPrice() {
-        return price;
+    public void setCondition(Condition condition) {
+        this.condition = condition;
     }
 }

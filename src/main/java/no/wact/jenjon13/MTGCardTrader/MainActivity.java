@@ -53,6 +53,23 @@ public class MainActivity extends Activity {
                 ((EditText) dialogView.findViewById(R.id.txtAmount)).setText(String.valueOf(currentCard.getAmount()));
                 alertDialog.show();
 
+                ((Button) dialogView.findViewById(R.id.btnRemove)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        java.util.List<Card> cards = rightAdapter.getCards();
+                        for (int i = 0; i < cards.size(); i++) {
+                            if (cards.get(i).equals(currentCard)) {
+                                cards.remove(i);
+                                rightAdapter.notifyDataSetChanged();
+                                recalculateTotal(rightAdapter, ((TextView) findViewById(R.id.txtPriceRight)));
+                                break;
+                            }
+                        }
+
+                        alertDialog.dismiss();
+                    }
+                });
+
                 final View.OnClickListener listener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

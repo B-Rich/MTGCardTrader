@@ -20,6 +20,10 @@ public class CardsAdapter extends BaseAdapter {
         this.activity = activity;
     }
 
+    public List<Card> getCards() {
+        return cards;
+    }
+
     @Override
     public int getCount() {
         return cards.size();

@@ -82,4 +82,11 @@
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnRemove"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Remove"/>
 </LinearLayout>

@@ -11,8 +11,8 @@ import no.wact.jenjon13.Forelesning08.R;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    private ArrayList<Card> leftCards = new ArrayList<Card>();
-    private ArrayList<Card> rightCards = new ArrayList<Card>();
+    private ArrayList<Card> leftCards = new ArrayList<>();
+    private ArrayList<Card> rightCards = new ArrayList<>();
 
 
     @Override
@@ -102,6 +102,7 @@ public class MainActivity extends Activity {
             recalculateTotal(adapter, rightSide);
         }
     }
+
 
     public void recalculateTotal(CardsAdapter adapter, boolean rightSide) {
         float totalPrice = 0;

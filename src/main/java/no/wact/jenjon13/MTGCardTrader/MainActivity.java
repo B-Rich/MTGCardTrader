@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
                 ((EditText) dialogView.findViewById(R.id.txtAmount)).setText(String.valueOf(currentCard.getAmount()));
                 alertDialog.show();
 
-                ((Button) dialogView.findViewById(R.id.btnRemove)).setOnClickListener(new View.OnClickListener() {
+                dialogView.findViewById(R.id.btnRemove).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         adapter.getCards().remove(currentCard);
@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
                 for (int button : buttons) {
                     final Button btn = (Button) dialogView.findViewById(button);
                     btn.setPressed(currentCard.getCondition().toString()
-                            .equalsIgnoreCase(btn.getText().toString().trim()) ? true : false);
+                            .equalsIgnoreCase(btn.getText().toString().trim()));
 
                     btn.setOnClickListener(listener);
                 }
@@ -116,7 +116,7 @@ public class MainActivity extends Activity {
     }
 
     private View.OnClickListener listener(final ArrayList<Card> cards,
-            final CardsAdapter adapter, final int priceTxtId) {
+                                          final CardsAdapter adapter, final int priceTxtId) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

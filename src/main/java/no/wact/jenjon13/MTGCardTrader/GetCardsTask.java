@@ -50,14 +50,10 @@ public class GetCardsTask extends AsyncTask<String, Void, List<Card>> {
         }
 
         if (cards != null && !cards.isEmpty()) {
-            //dataSet.addAll(cards);
             dataSet.add(cards.get(0));
             adapter.notifyDataSetChanged();
 
             float totalPrice = 0;
-            //for (Card card : cards) {
-            //  totalPrice += card.getPrice();
-            //}
             totalPrice += cards.get(0).getPrice();
 
             final TextView priceTxt = (TextView) activity.findViewById(priceTxtId);

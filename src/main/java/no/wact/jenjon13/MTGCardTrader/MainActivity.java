@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
                                         .txtAmount))
                                         .getText()
                                         .toString()));
-                                recalculateTotal(adapter, true);
+                                recalculateTotal(adapter, rightSide);
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -111,8 +111,8 @@ public class MainActivity extends Activity {
             totalPrice += (card.getPrice() * card.getAmount());
         }
 
-        final int txtId = rightSide ? R.id.txtPriceRight : R.id.txtPriceLeft;
-        ((TextView) findViewById(txtId)).setText(String.format("%.2f$", totalPrice));
+        ((TextView) findViewById(rightSide ? R.id.txtPriceRight : R.id.txtPriceLeft))
+                .setText(String.format("%.2f$", totalPrice));
         adapter.notifyDataSetChanged();
     }
 

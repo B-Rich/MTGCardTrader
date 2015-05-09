@@ -4,16 +4,23 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import no.wact.jenjon13.Forelesning08.R;
+import org.json.JSONArray;
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
+    public static final String apiUrl = "http://api.mtgdb.info/";
+    public static final String cardsQuery = "search/";
+
     private ArrayList<Card> leftCards = new ArrayList<>();
     private ArrayList<Card> rightCards = new ArrayList<>();
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,52 @@ public class MainActivity extends Activity {
 
         findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));
         findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter, R.id.txtPriceRight));
+
+        ((TextView) findViewById(R.id.editCardname)).addTextChangedListener(autoCompleteFromAPIListener());
+    }
+
+    private TextWatcher autoCompleteFromAPIListener() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                final int MIN_QUERY_INPUT = 2;
+                if (s.length() >= MIN_QUERY_INPUT) {
+                    updateAutoComplete(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+    }
+
+    private void updateAutoComplete(final String enteredText) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final String result = Jsoup.connect(apiUrl + cardsQuery + enteredText)
+                            .ignoreContentType(true)
+                            .execute()
+                            .body()
+                            .toString();
+
+                    final JSONArray jsonArray = new JSONArray(result);
+                    final StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        builder.append(" " + jsonArray.getJSONObject(i).getString("name"));
+                    }
+                    Log.v("onTextChanged", builder.toString());
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private AdapterView.OnItemClickListener createOnItemClickListener(final CardsAdapter adapter, final boolean
@@ -117,7 +170,7 @@ public class MainActivity extends Activity {
     }
 
     private View.OnClickListener listener(final ArrayList<Card> cards,
-                                          final CardsAdapter adapter, final int priceTxtId) {
+            final CardsAdapter adapter, final int priceTxtId) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

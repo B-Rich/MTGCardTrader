@@ -11,14 +11,19 @@ import android.view.View;
 import android.widget.*;
 import no.wact.jenjon13.Forelesning08.R;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends Activity {
     public static final String apiUrl = "http://api.mtgdb.info/";
     public static final String cardsQuery = "search/";
-
+    private final List<String> suggestedCards = new ArrayList<>();
+    private final int MIN_QUERY_INPUT = 2;
+    private ArrayAdapter adapter;
     private ArrayList<Card> leftCards = new ArrayList<>();
     private ArrayList<Card> rightCards = new ArrayList<>();
 
@@ -27,6 +32,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainscreen);
 
+        adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, suggestedCards);
         final CardsAdapter leftAdapter = new CardsAdapter(leftCards, MainActivity.this);
         final ListView listViewLeft = (ListView) findViewById(R.id.listViewLeft);
         listViewLeft.setAdapter(leftAdapter);
@@ -40,7 +46,10 @@ public class MainActivity extends Activity {
         findViewById(R.id.btnAddLeft).setOnClickListener(listener(leftCards, leftAdapter, R.id.txtPriceLeft));
         findViewById(R.id.btnAddRight).setOnClickListener(listener(rightCards, rightAdapter, R.id.txtPriceRight));
 
-        ((TextView) findViewById(R.id.editCardname)).addTextChangedListener(autoCompleteFromAPIListener());
+        final AutoCompleteTextView cardNameEdit = (AutoCompleteTextView) findViewById(R.id.editCardname);
+        cardNameEdit.addTextChangedListener(autoCompleteFromAPIListener());
+        cardNameEdit.setAdapter(adapter);
+        cardNameEdit.setThreshold(MIN_QUERY_INPUT);
     }
 
     private TextWatcher autoCompleteFromAPIListener() {
@@ -51,7 +60,6 @@ public class MainActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                final int MIN_QUERY_INPUT = 2;
                 if (s.length() >= MIN_QUERY_INPUT) {
                     updateAutoComplete(s.toString());
                 }
@@ -75,13 +83,29 @@ public class MainActivity extends Activity {
                             .toString();
 
                     final JSONArray jsonArray = new JSONArray(result);
-                    final StringBuilder builder = new StringBuilder();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        builder.append(" " + jsonArray.getJSONObject(i).getString("name"));
-                    }
-                    Log.v("onTextChanged", builder.toString());
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.clear();
+                            suggestedCards.clear();
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                try {
+                                    adapter.add(jsonArray.getJSONObject(i).getString("name"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+
+                    Log.w("updateAutoComplete", Arrays.toString(suggestedCards.toArray()));
+                    Log.w("updateAutoComplete", String.valueOf(suggestedCards.size()));
                 } catch (Exception e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -155,7 +179,6 @@ public class MainActivity extends Activity {
             recalculateTotal(adapter, rightSide);
         }
     }
-
 
     public void recalculateTotal(CardsAdapter adapter, boolean rightSide) {
         float totalPrice = 0;

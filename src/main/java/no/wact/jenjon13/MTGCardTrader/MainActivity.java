@@ -60,6 +60,10 @@ public class MainActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                /* TODO: OPTIMIZATION IDEA
+                    preload all suggestions when user enters >2 chars, then don't reload additional suggestions
+                    keep track of the two entered chars, and when they're erased, listen for changes
+                 */
                 if (s.length() >= MIN_QUERY_INPUT) {
                     updateAutoComplete(s.toString());
                 }

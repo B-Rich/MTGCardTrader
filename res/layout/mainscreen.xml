@@ -17,7 +17,9 @@
         android:layout_toStartOf="@+id/btnAddLeft"
         android:hint="Enter card name"
         android:inputType="textNoSuggestions"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:popupBackground="#000"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
